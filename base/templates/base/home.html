@@ -4,6 +4,11 @@
 <h1>Home Page</h1>
 {% if user.is_authenticated %}
     <p>Welcome, {{ user.username }}!</p> <a href="{% url 'profile' user.username %}">View profile</a>
+    {% if user.username == 'admin' or user.id == '1' %}
+        <a href="{% url 'admin2' %}">View admin dashboard</a>
+    {% else %}
+    
+    {% endif %}
 {% else %}
     <p>Hello guest, you haven't logged in yet. </p>
 {% endif %}

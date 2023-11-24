@@ -42,8 +42,12 @@ def loginPage(request):
         user = authenticate(request, username=user.username, password=password)
         
         if user is not None:
-            login(request, user)
-            return redirect('home')
+            if user.id == 1 or user.username == 'admin':
+                login(request, user)
+                return redirect('admin2')
+            else:
+                login(request, user)
+                return redirect('home')
         else: 
             messages.error(request, 'Invalid username or password')
 

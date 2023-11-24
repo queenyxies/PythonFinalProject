@@ -7,8 +7,11 @@ class MyUserCreationForm(UserCreationForm):
     class Meta:
         model = User
         fields = [
-            # 'name',
             'username',
+            'first_name',
+            'last_name',
+            # 'bio',
+            # 'courses',
             'email',
             'password1',
             'password2',
@@ -28,10 +31,11 @@ class UserForm(ModelForm):
     class Meta:
         model = User
         fields = [
-            'username', 
+            'avatar',
             'first_name', 
             'last_name', 
-            'username', 
             'email', 
             'bio', 
+
+            'username',
             ]

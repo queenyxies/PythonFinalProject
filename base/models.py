@@ -18,12 +18,15 @@ from django.contrib.auth.models import AbstractUser
 #     picture = models.CharField(max_length=255, null=True, blank=True)
 #     cover_photo = models.CharField(max_length=255, null=True, blank=True)
 #     bio = models.TextField(null=True, blank=True)
+
 class User(AbstractUser):
+    email = models.EmailField(unique=True)
     bio = models.TextField(null=True, blank=True)
     courses = models.ManyToManyField('Course', related_name='users', blank=True)
+    avatar = models.ImageField(null=True, default='avatar.png')
 
     def __str__(self):
-        return self.username  # Or any other field you want to use for the string representation
+        return f"{'Username: '}{self.username}"
 
     # USERNAME_FIELD = 'email'
     # REQUIRED_FIELDS = ['username']

@@ -6,28 +6,11 @@ from django.contrib.auth import authenticate, login, logout
 # from django.contrib.auth.forms import UserCreationForm
 from .models import Course, Lesson, User
 from .forms import CourseForm, LessonForm,UserForm, MyUserCreationForm
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 # from django.http import HttpResponse
 
-# Create your views here
-
-# courses = [
-#     {
-#         'id': 1, 
-#         'name': 'python'
-#     },
-#     {
-#         'id': 2, 
-#         'name': 'html'
-#     },
-#     {
-#         'id': 3, 
-#         'name': 'css'
-#     },
-# ]
-
 # Create your views here.
-
-
 def loginPage(request):
     page = 'login'
 
@@ -35,23 +18,36 @@ def loginPage(request):
         return redirect('home')
     
     if request.method == 'POST':
-        username = request.POST.get('username').lower()
+        login_input = request.POST.get('username').lower()
         password = request.POST.get('password')
 
-        try: 
-            user = User.objects.get(username=username)
-        except:
-            messages.error(request, 'user not exist')
+        # Check if login_input is a valid email address
+        is_email = '@' in login_input
+        if is_email:
+            # If it's an email, try to get the user by email
+            try:
+                user = User.objects.get(email=login_input)
+            except User.DoesNotExist:
+                messages.error(request, 'User does not exist')
+                return redirect('login')
+        else:
+            # If it's not an email, try to get the user by username
+            try:
+                user = User.objects.get(username=login_input)
+            except User.DoesNotExist:
+                messages.error(request, 'User does not exist')
+                return redirect('login')
 
-        user =authenticate(request, username=username, password=password)
+        # Authenticate the user using the obtained user object
+        user = authenticate(request, username=user.username, password=password)
+        
         if user is not None:
             login(request, user)
             return redirect('home')
         else: 
-            messages.error(request, 'username and pass not exist')
+            messages.error(request, 'Invalid username or password')
 
-
-    context = {'page':page}
+    context = {'page': page}
     return render(request, 'base/login_register.html', context)
 
 def logoutUser(request):
@@ -85,39 +81,86 @@ def home(request):
         }
     return render(request, 'base/home.html', context)
 
-# home page 
-def admin2(request):
-    return render(request, 'base/admin2.html')
-
-# # admin: manage course list
-# def courseList(request):
-#     return render(request, 'base/course_list.html')
 
 
-# admin: manage course list
-def courseList(request, pk):
-    # course = None
-    # for i in courses:
-    #     if i['name'] == str(pk):
-    #         course = i
-    course = Course.objects.get(course_id=pk)
-    context = {'course': course}
-    return render(request, 'base/course_list.html',context)
+# @login_required(login_url='home')
+# def course(request):
+    # course = Course.objects.all(User.objects.all())
+    # users = User.objects.all()
+
+    # user_courses_dict = {}
+
+    # for user in users:
+    #     enrolled_courses = user.courses.all()
+    #     user_courses_dict[user] = enrolled_courses
+        
+    # context = {'user_courses_dict': user_courses_dict}
+    # return render(request, 'base/course.html', context)
 
 @login_required(login_url='home')
 def course(request):
-    # course = Course.objects.all(User.objects.all())
-    users = User.objects.all()
+    # Assuming the user is logged in, you can get their enrolled courses
+    enrolled_courses = request.user.courses.all()
 
-    user_courses_dict = {}
-
-    for user in users:
-        enrolled_courses = user.courses.all()
-        user_courses_dict[user] = enrolled_courses
-        
-    context = {'user_courses_dict': user_courses_dict}
+    context = {'enrolled_courses': enrolled_courses}
     return render(request, 'base/course.html', context)
 
+
+
+
+
+def userProfile(request, pk):
+    user = User.objects.get(username=pk)
+    enrolled_courses = request.user.courses.all()
+
+    context = {'user':user,'enrolled_courses': enrolled_courses}
+    return render(request, 'base/profile.html', context)
+
+def updateUser(request):
+    user = request.user
+    form = UserForm(instance=user)
+
+    if request.method == 'POST':
+        form = UserForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully.')
+            return redirect('profile', pk=user.username)
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+            # messages.error(request, 'Sorry but the username or email was already used. Try a different one.')
+    return render(request, 'base/update_user.html', {'form': form})
+
+def changePassword(request):
+    user = request.user
+    password_form = PasswordChangeForm(user)
+
+    if request.method == 'POST':
+        password_form = PasswordChangeForm(user, request.POST)
+        if password_form.is_valid():
+            user = password_form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Password changed successfully.')
+            return redirect('profile', pk=user.username)
+        else:
+            for field, errors in password_form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+
+    return render(request, 'base/change_password.html', {'password_form': password_form})
+
+@login_required
+def deleteAccount(request):
+    if request.method == 'POST':
+        # Perform account deletion logic here
+        user = request.user
+        user.delete()
+        logout(request)
+        return redirect('home')  # Redirect to the home page or any other desired page after deletion
+
+    return render(request, 'base/delete_account.html')
 
 
 @login_required
@@ -135,6 +178,18 @@ def view_lessons(request, course_id):
     context = {'course': course}
     return render(request, 'base/view_lessons.html', context)
 
+
+
+# admin dashboard
+def admin2(request):
+    return render(request, 'base/admin2.html')
+
+
+# admin: manage course list
+def courseList(request, pk):
+    course = Course.objects.get(course_id=pk)
+    context = {'course': course}
+    return render(request, 'base/course_list.html',context)
 
 def createCourse(request):
     form = CourseForm()

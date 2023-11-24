@@ -3,7 +3,7 @@
 {% block content %}
 <h1>Home Page</h1>
 {% if user.is_authenticated %}
-    <p>Welcome, {{ user.username }}!</p>
+    <p>Welcome, {{ user.username }}!</p> <a href="{% url 'profile' user.username %}">View profile</a>
 {% else %}
     <p>Hello guest, you haven't logged in yet. </p>
 {% endif %}

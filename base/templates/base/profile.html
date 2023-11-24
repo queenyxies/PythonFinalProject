@@ -1,0 +1,44 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+<h1>Profile Page</h1>
+
+{% if user.is_authenticated %}
+    <img height="128px" src="{{ user.avatar.url }}" style="border-radius: 50%;"  alt="userIcon">
+    {% if request.user == user %}
+        <a href="{% url 'update_user' %}">edit profile</a>
+    {%endif%}
+    <h1> {{ user.first_name }} {{ user.last_name }}</h1>
+    <p>username: {{ user.username }}</p>
+    <p>bio: {{ user.bio }}</p>
+    <h4>About</h4>
+    <p>email: {{ user.email }}</p>
+    <p>contact_num: {{ user.contact_num }}</p>
+    <p>badges/achievements: </p>
+
+    <h4>Progress</h4>
+    <p>user.badges.count: </p>
+    <p>user.course.count:  {{ enrolled_courses.count }}  </p>
+    <p>user.exercise.count: </p>
+    <p>user.quiz.count: </p>
+   
+    
+    {% if enrolled_courses %}
+    <h4>enrolled courses </h4>
+    <ul>
+        {% for course in enrolled_courses %}
+        <li>
+            {{ course.title }}  {{ course.description }}
+            <a href="{% url 'view_lessons' course_id=course.course_id %}">View Course</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No enrolled courses for you.</p>
+    {% endif %}
+
+    <h4>certificates</h4>
+
+  
+{% endif %}
+{% endblock content %}

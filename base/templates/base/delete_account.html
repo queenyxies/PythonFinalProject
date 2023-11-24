@@ -1,0 +1,16 @@
+{% extends 'main.html' %}
+{% block content %}
+
+{% if user.is_authenticated %}
+    <h1>Delete Account</h1>
+
+    <p>Are you sure you want to delete your account?</p>
+
+    <form action="" method="POST">
+        {% csrf_token %}
+        <button type="submit">Delete permanently</button>
+    </form>
+
+{% endif %}
+
+{% endblock content %}

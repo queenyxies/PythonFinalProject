@@ -1,0 +1,32 @@
+{% extends 'main.html' %}
+
+
+{% block content %}
+
+<h1>My Courses  </h1>
+
+<div>
+    <div>
+        <!-- course.html -->
+
+{% for user, enrolled_courses in user_courses_dict.items %}
+<h2>{{ user.username }}'s Enrolled Courses</h2>
+{% if enrolled_courses %}
+  <ul>
+    {% for course in enrolled_courses %}
+      <li>
+        {{ course.title }} - {{ course.description }}
+        <a href="{% url 'view_lessons' course_id=course.course_id %}">View Course</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No enrolled courses for this user.</p>
+{% endif %}
+{% endfor %}
+
+    </div>
+</div>
+
+{% endblock content %}
+

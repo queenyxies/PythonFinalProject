@@ -28,14 +28,14 @@ def loginPage(request):
             try:
                 user = User.objects.get(email=login_input)
             except User.DoesNotExist:
-                messages.error(request, 'User does not exist')
+                messages.error(request, 'Username or email does not exist.')
                 return redirect('login')
         else:
             # If it's not an email, try to get the user by username
             try:
                 user = User.objects.get(username=login_input)
             except User.DoesNotExist:
-                messages.error(request, 'User does not exist')
+                messages.error(request, 'Username or email does not exist.')
                 return redirect('login')
 
         # Authenticate the user using the obtained user object
@@ -70,7 +70,7 @@ def registerPage(request):
             login(request, user)
             return redirect('home')
         else: 
-            messages.error(request, 'an error')
+            messages.error(request, 'An error occurred. Please try again.')
 
     return render(request, 'base/login_register.html', {'form':form})
     

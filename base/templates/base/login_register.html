@@ -1,7 +1,11 @@
 {% extends 'main.html' %}
 {% block content %}
 {% load static %}
-
+<script>
+  $(document).ready(function() {
+    $("#username").focus();
+  });
+</script>
 
 <div class="bg-gray-200 h-screen flex items-center justify-center">
 {% if page == 'login' %}
@@ -19,7 +23,18 @@
     <div class="mb-3">
       <label for="password" class="block text-gray-500 text-sm font-medium mb-1">Password</label>
       <input type="password" id="password" name="password" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white focus:outline-none" placeholder="•••••••••" required>
+      <span>
+        {% if messages %}
+      <small class="messages">
+      {% for message in messages %}
+      <p style="color:red">{{ message }}</p>
+      {% endfor %}
+      </small>
+      {% endif %}
+      </span>
     </div>
+
+    
 
     <!-- <div class="mb-5 text-green-700 font-medium">
       <a href="#">Forgot Password?</a>
@@ -94,3 +109,4 @@
 {% endif %}
 {% endblock %}
 </div>
+

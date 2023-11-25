@@ -101,7 +101,7 @@ def home(request):
     # context = {'user_courses_dict': user_courses_dict}
     # return render(request, 'base/course.html', context)
 
-@login_required(login_url='home')
+@login_required(login_url='login')
 def course(request):
     # Assuming the user is logged in, you can get their enrolled courses
     enrolled_courses = request.user.courses.all()

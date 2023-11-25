@@ -1,15 +1,24 @@
 {% extends 'main.html' %}
 
 {% block content %}
+<title>Home</title>
+<br>
+<br>
+<br>
+<br>    
+
+<div class="bg-white  justify-center  p-10 rounded-2xl shadow-md w-full max-w-lg">
 <h1>Home Page</h1>
 {% if user.is_authenticated %}
-    <p>Welcome, {{ user.username }}!</p> <a href="{% url 'profile' user.username %}">View profile</a>
+    <p>Welcome, {{ user.username }}!</p> <a href="{% url 'profile' user.username %}" class="text-blue-600">View profile</a><br>
     {% if user.username == 'admin' or user.id == '1' %}
-        <a href="{% url 'admin2' %}">View admin dashboard</a>
+        <a href="{% url 'admin2' %}" class="text-blue-600">View admin dashboard</a>
     {% else %}
     
     {% endif %}
 {% else %}
     <p>Hello guest, you haven't logged in yet. </p>
 {% endif %}
+</div>
 {% endblock content %}
+

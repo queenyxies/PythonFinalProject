@@ -1,4 +1,6 @@
 {% load static %}
+
+<div class="bg-white fixed left-0">
 <a href="/"><h1>home</h1></a>
 <a href="/course"><h1>My Course</h1></a>
 
@@ -6,9 +8,9 @@
     <a href="#" onclick="confirmLogout()">logout</a>
 {% else %}
     <a href="{% url 'login' %}"><h1>login</h1></a>
-{% endif %}
+{% endif %}   
+</div>
 
-<hr>
 
 <script>
   function confirmLogout() {

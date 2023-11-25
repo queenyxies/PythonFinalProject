@@ -14,17 +14,17 @@
                 {{ field }}
             </div>
         {% endfor %}
-        <button type="submit">Save Changes</button>
+        <button type="submit" class="text-white bg-green-600 py-2 px-4 rounded-lg" >Save Changes</button>
     </form>
 
-    <hr>
+    <br>
 
     <!-- Link to Change Password -->
-    <p><a href="{% url 'change_password' %}">Change Password</a></p>
+    <p><a class="text-green-700 bg-white hover:bg-green-600 hover:text-white duration-200 border-solid border-2 border-green-600 py-2 px-4 rounded-lg " href="{% url 'change_password' %}">Change Password</a></p>
 
     <!-- Link to delete profile -->
     {% if user.username != 'admin' or user.id != 1 %}
-    <p><a style="color: red;" href="{% url 'delete_account' %}">delete this account</a></p>
+    <p><a class="text-red-600" href="{% url 'delete_account' %}">delete this account</a></p>
     {% else %}
     {% endif %}
     
